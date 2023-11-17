@@ -19,10 +19,16 @@ const popularStyle = StyleSheet.create({
   },
   subText: { fontFamily: "dm-sb", fontSize: 14, color: Colors.headerText },
   showAllBtn: {
-    backgroundColor: "#DDF2FD",
+    backgroundColor: Colors.cardBg,
     borderRadius: 50,
     paddingVertical: 4,
     paddingHorizontal: 8,
+  },
+
+  //card part
+
+  cardContainer: {
+    paddingTop: 12,
   },
 });
 
