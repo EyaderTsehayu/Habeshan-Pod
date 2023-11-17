@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
   },
   ctaContainer: {
     backgroundColor: "#EEF5FF",
-    borderTopLeftRadius: 40,
-    height: 500,
+    borderTopLeftRadius: 30,
     overflow: "hidden",
   },
 });

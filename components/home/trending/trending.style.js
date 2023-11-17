@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const trendingStyle = StyleSheet.create({
   container: {
     paddingHorizontal: 12,
-    paddingTop: 20,
+    paddingVertical: 14,
   },
   headerContainer: {
     display: "flex",
@@ -23,6 +23,12 @@ const trendingStyle = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 4,
     paddingHorizontal: 8,
+  },
+
+  //Trending card
+
+  cardContainer: {
+    paddingTop: 12,
   },
 });
 

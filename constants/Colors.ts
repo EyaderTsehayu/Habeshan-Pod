@@ -4,4 +4,6 @@ export default {
 
   primaryText: "#F7F7F7",
   headerText: "#2B3499",
+
+  cardBg: "#DDF2FD",
 };
