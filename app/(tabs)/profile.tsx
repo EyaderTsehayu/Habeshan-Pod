@@ -1,14 +1,41 @@
 import { Link } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Button, SafeAreaView, StyleSheet } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
+import { Stack } from "expo-router";
+import Colors from "@/constants/Colors";
 
 const Page = () => {
+  const { signOut, isSignedIn } = useAuth();
   return (
-    <View>
-      <Link href={"/(modals)/login"}>Login</Link>
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          // headerStyle: { backgroundColor: Colors.primary },
+          headerShadowVisible: false,
+          headerTitle: "",
+        }}
+      />
 
-      <Text>Explore</Text>
-    </View>
+      <View style={styles.ctaContainer}>
+        <Button title="Log Out" onPress={() => signOut()} />
+        {!isSignedIn && (
+          <Link href={"/(modals)/login"}>
+            <Text>Login</Text>
+          </Link>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default Page;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
+  ctaContainer: {
+    padding: 50,
+  },
+});

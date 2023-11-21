@@ -1,5 +1,6 @@
 import React from "react";
-//import { useOAuth } from "@clerk/clerk-expo";
+import { useCallback } from "react";
+import * as WebBrowser from "expo-web-browser";
 import {
   View,
   Text,
@@ -10,7 +11,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
-//import { useRouter } from "expo-router";
+import { useOAuth } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 
 // enum Strategy {
 //   Google = "oauth_google",
@@ -18,11 +20,27 @@ import { defaultStyles } from "@/constants/Styles";
 //   Facebook = "oauth_facebook",
 // }
 const Login = () => {
-  //  const router = useRouter();
-  //  const { startOAuthFlow: googleAuth } = useOAuth({
-  //    strategy: "oauth_google",
-  //  });
+  const router = useRouter();
+
   useWarmUpBrowser();
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const onGoogleAuth = useCallback(async () => {
+    try {
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow();
+
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
+        router.back();
+        // router.push("/(tabs)/");
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+      router.back();
+    } catch (err) {
+      console.error("OAuth error", err);
+    }
+  }, []);
   return (
     <View style={defaultStyles.container}>
       <TextInput
@@ -52,10 +70,7 @@ const Login = () => {
         />
       </View>
       <View style={{ gap: 20 }}>
-        <TouchableOpacity
-          style={styles.btnOutline}
-          //onPress={() => onSelectAuth(Strategy.Google)}
-        >
+        <TouchableOpacity style={styles.btnOutline} onPress={onGoogleAuth}>
           <Ionicons
             name="md-logo-google"
             size={24}
