@@ -29,6 +29,7 @@ const trendingStyle = StyleSheet.create({
 
   cardContainer: {
     paddingTop: 12,
+    rowGap: 12,
   },
 });
 

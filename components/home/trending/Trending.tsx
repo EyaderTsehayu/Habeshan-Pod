@@ -66,13 +66,9 @@ const Trending = () => {
         </Text>
       </View>
       <View style={trendingStyle.cardContainer}>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => <TrendingPodCard item={item} />}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ rowGap: 12 }}
-        />
+        {data.map((item) => (
+          <TrendingPodCard key={item.id} item={item} />
+        ))}
       </View>
     </View>
   );
