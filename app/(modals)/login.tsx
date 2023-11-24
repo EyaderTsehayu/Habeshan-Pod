@@ -1,6 +1,5 @@
-import React from "react";
 import { useCallback } from "react";
-import * as WebBrowser from "expo-web-browser";
+import { db } from "@/firebaseConfig";
 import {
   View,
   Text,
@@ -11,16 +10,25 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
 import { defaultStyles } from "@/constants/Styles";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useAuth, useOAuth } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 
 // enum Strategy {
 //   Google = "oauth_google",
 //   Apple = "oauth_apple",
 //   Facebook = "oauth_facebook",
 // }
+// interface User{
+
+// }
+
 const Login = () => {
+  // const [useri, setUser] = useState(null);
   const router = useRouter();
+  const { isSignedIn } = useAuth();
+
+  // setUser(user);
 
   useWarmUpBrowser();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
@@ -28,10 +36,37 @@ const Login = () => {
     try {
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow();
-
+      let emailExists = false;
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
         router.back();
+        //console.log("user", user);
+        if (signUp?.emailAddress !== null) {
+          //  console.log("user", signUp);
+          try {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            querySnapshot.forEach((doc) => {
+              if (signUp?.emailAddress == doc.data().email) {
+                console.log("duplicated email");
+                emailExists = true;
+              }
+            });
+
+            if (!emailExists) {
+              const docRef = await addDoc(collection(db, "users"), {
+                userId: signUp?.createdUserId,
+                firstName: signUp?.firstName,
+                lastName: signUp?.lastName,
+                email: signUp?.emailAddress,
+              });
+              console.log("Document written with ID: ", docRef.id);
+            }
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
+        } else {
+          console.log("nullll");
+        }
         // router.push("/(tabs)/");
       } else {
         // Use signIn or signUp for next steps such as MFA
@@ -41,6 +76,7 @@ const Login = () => {
       console.error("OAuth error", err);
     }
   }, []);
+
   return (
     <View style={defaultStyles.container}>
       <TextInput

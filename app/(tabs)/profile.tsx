@@ -1,11 +1,14 @@
 import { Link } from "expo-router";
 import { View, Text, Button, SafeAreaView, StyleSheet } from "react-native";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
 import Colors from "@/constants/Colors";
 
 const Page = () => {
   const { signOut, isSignedIn } = useAuth();
+  const { user } = useUser();
+
+  // console.log(user);
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -15,7 +18,6 @@ const Page = () => {
           headerTitle: "",
         }}
       />
-
       <View style={styles.ctaContainer}>
         <Button title="Log Out" onPress={() => signOut()} />
         {!isSignedIn && (
