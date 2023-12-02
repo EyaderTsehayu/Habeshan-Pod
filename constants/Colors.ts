@@ -6,4 +6,6 @@ export default {
   headerText: "#2B3499",
 
   cardBg: "#DDF2FD",
+  lightBg: "#EEF5FF",
+  lightNavy: "#713ABE",
 };

@@ -31,7 +31,6 @@ const Layout = () => {
         options={{
           tabBarLabel: "Create",
 
-          headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <Entypo name="mic" size={24} color={color} />
           ),
@@ -42,7 +41,7 @@ const Layout = () => {
         options={{
           tabBarLabel: "My Podcast",
 
-          headerShown: false,
+          //  headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="podcast" size={24} color={color} />
           ),
@@ -53,7 +52,7 @@ const Layout = () => {
         options={{
           tabBarLabel: "My Subscription",
 
-          headerShown: false,
+          // headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="subscriptions" size={24} color={color} />
           ),
