@@ -19,8 +19,7 @@ import { useState } from "react";
 
 const Page = () => {
   const router = useRouter();
-  //const tabs = ["Sport","Technology","Business","Self Development"];
-  const [activeTab, setActiveTab] = useState<string>(tabs[0]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -40,33 +39,59 @@ const Page = () => {
               />
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <View style={styles.myPods}>
-              <TouchableOpacity
-                style={{
-                  display: "flex",
-                  marginTop: 12,
-                  flexDirection: "row",
-                  columnGap: 12,
-                }}
-              >
-                <Text style={styles.headerTxt}>My Subscription</Text>
-              </TouchableOpacity>
-            </View>
-          ),
+          // headerRight: () => (
+          //   <View style={styles.myPods}>
+          //     <TouchableOpacity
+          //       style={{
+          //         display: "flex",
+          //         marginTop: 12,
+          //         flexDirection: "row",
+          //         columnGap: 12,
+          //       }}
+          //     >
+          //       <Text style={styles.headerTxt}>My Subscription</Text>
+          //     </TouchableOpacity>
+          //   </View>
+          // ),
         }}
       />
 
       <View style={styles.container}>
-        <View>
+        <View
+          style={{
+            display: "flex",
+            gap: 2,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 4,
+          }}
+        >
           <View style={styles.followCont}>
             <Text style={styles.followPodTxt}>Follow Podcasts</Text>
             <Text style={styles.followPodSubText}>
               Based on your favorites genres, here are pods that suit you best.
             </Text>
           </View>
+          <Image
+            source={require("../../assets/images/podcast-mic.png")}
+            style={styles.podImg}
+          />
         </View>
         <Genres />
+        <View style={styles.RecommendedPodsPodCont}>
+          <View
+            style={{
+              flex: 1,
+              borderColor: Colors.cardBg,
+              borderWidth: 5,
+              borderRightWidth: 44,
+
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          ></View>
+          <Text style={styles.RecommendedPodsPodTxt}>Recommended pods</Text>
+        </View>
         <ScrollView>
           <RecommendedPods />
         </ScrollView>
@@ -96,7 +121,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     marginHorizontal: 24,
-    paddingVertical: 14,
+    // paddingVertical: 14,
+    width: "60%",
   },
   followPodSubText: {
     color: Colors.lightNavy,
@@ -108,5 +134,26 @@ const styles = StyleSheet.create({
     color: Colors.headerText,
     fontFamily: "dm-b",
     fontSize: 32,
+  },
+  RecommendedPodsPodCont: {
+    alignItems: "center",
+    marginTop: 12,
+    paddingTop: 16,
+    backgroundColor: Colors.lightBg1,
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  RecommendedPodsPodTxt: {
+    color: Colors.headerText,
+    padding: 12,
+
+    fontFamily: "dm-b",
+    fontSize: 28,
+  },
+  podImg: {
+    resizeMode: "contain",
+
+    width: 100,
+    height: 120,
   },
 });

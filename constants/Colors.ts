@@ -8,4 +8,5 @@ export default {
   cardBg: "#DDF2FD",
   lightBg: "#EEF5FF",
   lightNavy: "#713ABE",
+  lightBg1: "#F3F4F8",
 };
