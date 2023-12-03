@@ -20,12 +20,14 @@ const PodDescription = () => {
           style={podDescStyles.input}
           value={searchTerm}
           onChangeText={(text) => setSearchTerm(text)}
+          placeholderTextColor={Colors.lightNavy}
           placeholder="Podcast Title"
         />
         <TextInput
           style={podDescStyles.input}
           value={searchTerm}
           onChangeText={(text) => setSearchTerm(text)}
+          placeholderTextColor={Colors.lightNavy}
           placeholder="Description"
         />
         <TextInput
@@ -33,9 +35,10 @@ const PodDescription = () => {
           value={searchTerm}
           onChangeText={(text) => setSearchTerm(text)}
           placeholder="Episode"
+          placeholderTextColor={Colors.lightNavy}
         />
         <TouchableOpacity style={podDescStyles.uploadBtn}>
-          <Feather name="upload-cloud" size={24} color={Colors.headerText} />
+          <Feather name="upload-cloud" size={26} color={Colors.lightBg1} />
           <Text style={podDescStyles.btnText}>Upload</Text>
         </TouchableOpacity>
       </View>

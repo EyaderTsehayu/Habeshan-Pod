@@ -4,10 +4,11 @@ import { StyleSheet } from "react-native";
 const podDescStyles = new StyleSheet.create({
   container: {
     backgroundColor: Colors.cardBg,
-    marginTop: 10,
+    //marginTop: 10,
     paddingVertical: 30,
     paddingHorizontal: 24,
-    borderRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     //height: "100%",
   },
 
@@ -15,9 +16,10 @@ const podDescStyles = new StyleSheet.create({
     fontFamily: "dm",
     width: "100%",
     marginHorizontal: 5,
-    backgroundColor: Colors.lightBg,
+    backgroundColor: Colors.lightBg1,
     paddingVertical: 8,
     paddingLeft: 14,
+    color: Colors.lightNavy,
     borderRadius: 12,
   },
   inputWrapper: {
@@ -42,7 +44,7 @@ const podDescStyles = new StyleSheet.create({
   btnText: {
     fontFamily: "dm-b",
     fontSize: 20,
-    color: Colors.headerText,
+    color: Colors.lightBg1,
   },
 });
 
