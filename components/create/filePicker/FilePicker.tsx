@@ -47,14 +47,19 @@ const FilePicker = () => {
       <View style={filePickerStyles.imagePickerCont}>
         <TouchableOpacity onPress={pickImage}>
           {!image ? (
-            <View style={filePickerStyles.imagePickerMsgCont}>
-              <Entypo name="images" size={48} color={Colors.primary} />
-              <View>
+            <View
+              style={{ display: "flex", flexDirection: "row", columnGap: 3 }}
+            >
+              <Image
+                source={require("../../../assets/images/gallery.png")}
+                style={filePickerStyles.galleryImg}
+              />
+
+              <View style={filePickerStyles.imagePickerMsgCont}>
                 <Text style={filePickerStyles.imagePickerMsgHeader}>
                   Choose Podcast Cover
                 </Text>
                 <Text style={filePickerStyles.imagePickerMsgSubtext}>
-                  {" "}
                   Format JPG,PNG,JPEG{" "}
                 </Text>
               </View>
@@ -77,8 +82,6 @@ const FilePicker = () => {
         <TouchableOpacity onPress={pickAudio}>
           {!name ? (
             <View style={filePickerStyles.audioPickerMsgCont}>
-              <Entypo name="modern-mic" size={44} color={Colors.lightNavy} />
-
               <View>
                 <Text style={filePickerStyles.imagePickerMsgHeader}>
                   Choose Your Podcast
@@ -88,6 +91,10 @@ const FilePicker = () => {
                   Format mp3, mp4, aac{" "}
                 </Text>
               </View>
+              <Image
+                source={require("../../../assets/images/podcast-mic.png")}
+                style={filePickerStyles.podImg}
+              />
             </View>
           ) : (
             <View style={filePickerStyles.docView}>

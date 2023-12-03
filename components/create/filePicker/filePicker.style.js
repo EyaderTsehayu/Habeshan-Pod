@@ -14,15 +14,14 @@ const filePickerStyles = StyleSheet.create({
     borderColor: Colors.secondary,
     borderStyle: "dashed",
     height: 150,
-
+    padding: 6,
     borderRadius: 20,
+    backgroundColor: Colors.cardBg,
   },
   imagePickerMsgCont: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    //justifyContent: "space-between",
-    padding: 32,
+    flexDirection: "column",
+    padding: 22,
     columnGap: 12,
   },
   imagePickerMsgHeader: {
@@ -31,7 +30,7 @@ const filePickerStyles = StyleSheet.create({
     fontSize: 26,
   },
   imagePickerMsgSubtext: {
-    color: Colors.secondary,
+    color: Colors.lightNavy,
     fontFamily: "dm-sb",
     paddingTop: 6,
   },
@@ -65,6 +64,16 @@ const filePickerStyles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     rowGap: 12,
+  },
+  podImg: {
+    height: 100,
+    width: 120,
+    resizeMode: "contain",
+  },
+  galleryImg: {
+    height: 100,
+    width: 80,
+    resizeMode: "contain",
   },
 });
 export default filePickerStyles;
