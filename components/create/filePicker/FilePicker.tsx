@@ -1,12 +1,20 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
-import filePickerStyles from "./filePicker.style";
 import { Entypo } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
+import filePickerStyles from "./filePicker.style";
 
-const FilePicker = () => {
+interface FilePickerProps {
+  onFilePicked: (name: string | null, size: number | null) => void;
+  onImagePicked: (image: string | null) => void; // New prop for image picking
+}
+
+const FilePicker: React.FC<FilePickerProps> = ({
+  onFilePicked,
+  onImagePicked,
+}) => {
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [size, setSize] = useState<number | null>(null);
@@ -16,32 +24,32 @@ const FilePicker = () => {
       type: ["audio/mpeg"],
     });
 
-    console.log(result);
+    console.log("result from file picker", result);
+
     if (!result.canceled && result.assets.length > 0) {
       setName(result.assets[0].name);
-      // Check if size exists before setting the state
-      if (result.assets[0].size !== undefined) {
-        setSize(result.assets[0].size);
-      } else {
-        setSize(null); // or a default value depending on your logic
-      }
+
+      setSize(result.assets[0].size ?? null); // Update this line
+      onFilePicked(result.assets[0].name, result.assets[0].size ?? null);
     }
   };
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
-    // console.log(result);
-    delete (result as any).cancelled;
+
+    delete (result as any).canceled;
     if (!result.canceled) {
+      console.log("From File Picker", result.assets[0].uri);
       setImage(result.assets[0].uri);
+      onImagePicked(result.assets[0].uri); // Pass the image URI here
     }
   };
+
   return (
     <View style={filePickerStyles.container}>
       <View style={filePickerStyles.imagePickerCont}>
@@ -70,8 +78,8 @@ const FilePicker = () => {
                 source={{ uri: image }}
                 resizeMode="contain"
                 style={{
-                  width: 500,
-                  height: 150,
+                  width: 170,
+                  height: 140,
                 }}
               />
             </View>
