@@ -8,27 +8,62 @@ import {
   Button,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
-import { Stack } from "expo-router";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
 import FilePicker from "@/components/create/filePicker/FilePicker";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import PodDescription from "@/components/create/podDescription/PodDescription";
-//import React, { useState } from "react";
-// import * as ImagePicker from "expo-image-picker";
-// import * as DocumentPicker from "expo-document-picker";
+import { useState } from "react";
 
 const Page = () => {
   const router = useRouter();
+  const [image, setImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<number | null>(null);
+  const [podcastDetails, setPodcastDetails] = useState({
+    title: "",
+    description: "",
+    episode: "",
+  });
+
+  const handleFilePicked = (name: string | null, size: number | null) => {
+    setFileName(name);
+    setFileSize(size);
+  };
+  const handleImagePicked = (pickedImage: string | null) => {
+    setImage(pickedImage);
+  };
+
+  const handlePodDetailsEntered = (
+    title: string,
+    description: string,
+    episode: string
+  ) => {
+    setPodcastDetails({ title, description, episode });
+    console.log("Log from the main page");
+
+    console.log("Title:", title);
+    console.log("Description:", description);
+    console.log("Episode:", episode);
+    console.log("Image:", image);
+    console.log("File Name:", fileName);
+    console.log("File Size:", fileSize);
+
+    // Here, you can send all the collected data (image, fileName, fileSize, and podcastDetails) to your database or perform further actions.
+    // Example:
+    // sendDataToDatabase(image, fileName, fileSize, podcastDetails);
+  };
+
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }} // Set flex: 1 to cover the entire screen
-      behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjust behavior for iOS/Android
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100} // Adjust offset for iOS/Android
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.lightBg }}>
         <Stack.Screen
           options={{
             headerStyle: { backgroundColor: Colors.lightBg },
@@ -57,31 +92,34 @@ const Page = () => {
                   }}
                 >
                   {/* <Entypo name="upload" size={24} color={Colors.headerText} /> */}
-                  <Text style={styles.headerTxt}>Add Files</Text>
+                  <Text style={styles.headerTxt}>Create pods</Text>
                 </TouchableOpacity>
               </View>
             ),
           }}
         />
-
         <View style={styles.container}>
           <View style={styles.filePickerContainer}>
-            <FilePicker />
+            <FilePicker
+              onFilePicked={handleFilePicked}
+              onImagePicked={handleImagePicked}
+            />
           </View>
-
-          <PodDescription />
+          <PodDescription onPodDetailsEntered={handlePodDetailsEntered} />
         </View>
+        {/* ... (existing code remains the same) */}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
 
 export default Page;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.lightBg,
-    marginTop: 3,
+    // marginTop: 3,
   },
   headerTxt: {
     fontFamily: "dm-b",
@@ -93,6 +131,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
   },
   filePickerContainer: {
+    flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
