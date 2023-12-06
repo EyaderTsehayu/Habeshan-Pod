@@ -9,7 +9,7 @@ const podDescStyles = new StyleSheet.create({
     paddingHorizontal: 24,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
-    //height: "100%",
+    // height: "40%",
   },
 
   input: {
