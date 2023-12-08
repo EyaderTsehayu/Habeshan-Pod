@@ -4,24 +4,39 @@ import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import Colors from "@/constants/Colors";
 interface Item {
-  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
   title: string;
-  creator: string;
-  cover: string;
+  episode: number;
+  coverImageUrl: string;
 }
 
 const TrendingPodCard = ({ item }: { item: Item }) => {
   return (
     <TouchableOpacity style={trendingCardStyle.container}>
       <View style={trendingCardStyle.description}>
-        <Image style={trendingCardStyle.cover} source={{ uri: item.cover }} />
+        <Image
+          style={trendingCardStyle.cover}
+          source={{ uri: item.coverImageUrl }}
+        />
         <View style={trendingCardStyle.detailsContainer}>
           <Text style={trendingCardStyle.title}>{item.title}</Text>
-          <Text style={trendingCardStyle.creator}>By {item.creator}</Text>
+          <Text style={trendingCardStyle.episode}>
+            Episode - {item.episode}
+          </Text>
+          <Text style={trendingCardStyle.creator}>
+            By {item.firstName}&nbsp;{item.lastName}
+          </Text>
         </View>
       </View>
       <TouchableOpacity>
-        <AntDesign name="play" size={46} color={Colors.primary} />
+        <AntDesign
+          style={trendingCardStyle.playBtn}
+          name="play"
+          size={58}
+          color={Colors.primary}
+        />
       </TouchableOpacity>
     </TouchableOpacity>
   );
