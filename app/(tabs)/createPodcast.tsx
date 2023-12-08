@@ -17,12 +17,36 @@ import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import PodDescription from "@/components/create/podDescription/PodDescription";
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-expo";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
+import { db } from "@/firebaseConfig";
 
 const Page = () => {
   const router = useRouter();
+  const { user, isSignedIn } = useUser();
+
+  let userId = "";
+  let firstName = "";
+  let lastName = "";
+  if (isSignedIn) {
+    if (user?.id && user?.firstName && user?.lastName) {
+      userId = user.id;
+      firstName = user?.firstName;
+      lastName = user?.lastName;
+    } else {
+      console.log("User not available");
+    }
+  }
+
   const [image, setImage] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [fileSize, setFileSize] = useState<number | null>(null);
+  const [audio, setAudio] = useState<string | null>(null);
   const [podcastDetails, setPodcastDetails] = useState({
     title: "",
     description: "",
@@ -30,14 +54,13 @@ const Page = () => {
   });
 
   const handleFilePicked = (name: string | null, size: number | null) => {
-    setFileName(name);
-    setFileSize(size);
+    setAudio(name);
   };
   const handleImagePicked = (pickedImage: string | null) => {
     setImage(pickedImage);
   };
 
-  const handlePodDetailsEntered = (
+  const handlePodDetailsEntered = async (
     title: string,
     description: string,
     episode: string
@@ -49,12 +72,53 @@ const Page = () => {
     console.log("Description:", description);
     console.log("Episode:", episode);
     console.log("Image:", image);
-    console.log("File Name:", fileName);
-    console.log("File Size:", fileSize);
+    console.log("File Name:", audio);
+    const storage = getStorage();
+    if (image && audio) {
+      try {
+        const storageRef = ref(storage);
 
-    // Here, you can send all the collected data (image, fileName, fileSize, and podcastDetails) to your database or perform further actions.
-    // Example:
-    // sendDataToDatabase(image, fileName, fileSize, podcastDetails);
+        // Function to convert data URL to Blob
+        const dataURLToBlob = async (dataURL: any) => {
+          const response = await fetch(dataURL);
+          const blob = await response.blob();
+          return blob;
+        };
+
+        // Convert data URLs to Blobs
+        const coverImageBlob = await dataURLToBlob(image);
+        const audioBlob = await dataURLToBlob(audio);
+
+        // Upload cover image
+        const coverImageRef = ref(storage, `podcasts/${title}/coverImage.jpg`);
+        await uploadBytes(coverImageRef, coverImageBlob);
+
+        // Upload audio file
+        const audioRef = ref(storage, `podcasts/${title}/audio.mp3`);
+        await uploadBytes(audioRef, audioBlob);
+
+        // Get download URLs for the uploaded files
+        const coverImageUrl = await getDownloadURL(coverImageRef);
+        const audioUrl = await getDownloadURL(audioRef);
+
+        // Store podcast details in Firestore
+        await addDoc(collection(db, "podcasts"), {
+          userId,
+          firstName,
+          lastName,
+          title,
+          episode,
+          genre: "trial",
+          description,
+          coverImageUrl,
+          audioUrl,
+          createdAt: serverTimestamp(),
+        });
+      } catch (error) {
+        // Handle any errors here
+        console.error("Error:", error);
+      }
+    }
   };
 
   return (
