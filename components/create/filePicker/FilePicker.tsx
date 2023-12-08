@@ -30,7 +30,7 @@ const FilePicker: React.FC<FilePickerProps> = ({
       setName(result.assets[0].name);
 
       setSize(result.assets[0].size ?? null); // Update this line
-      onFilePicked(result.assets[0].name, result.assets[0].size ?? null);
+      onFilePicked(result.assets[0].uri, result.assets[0].size ?? null);
     }
   };
 
