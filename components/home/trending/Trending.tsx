@@ -1,60 +1,56 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import trendingStyle from "./trending.style";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TrendingPodCard from "@/components/common/cards/trending/TrendingPodCard";
+import {
+  collection,
+  getDocs,
+  DocumentData,
+  QuerySnapshot,
+} from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
-const Trending = () => {
-  const data = [
-    {
-      id: "1",
-      title: "Silcon valley stories",
-      creator: "Richard Hendric",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "2",
-      title: "Silcon valley stories",
-      creator: "Erlich Bachman",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "3",
-      title: "Silcon valley stories",
-      creator: "Gilfoyel",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "4",
-      title: "Silcon valley stories",
-      creator: "Denish",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "5",
-      title: "Silcon valley stories",
-      creator: "Jared",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "6",
-      title: "Silcon valley stories",
-      creator: "Jien yang",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "7",
-      title: "Silcon valley stories",
-      creator: "Jien Yang",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-  ];
+interface Podcast {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  audioUrl: string;
+  coverImageUrl: string;
+  description: string;
+  episode: number;
+}
+
+const Trending: React.FC = () => {
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
+  useEffect(() => {
+    const fetchPodcasts = async () => {
+      try {
+        const podcastCollection = collection(db, "podcasts");
+        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+          podcastCollection
+        );
+        console.log(querySnapshot);
+
+        const fetchedPodcasts: Podcast[] = [];
+
+        querySnapshot.forEach((doc) => {
+          const podcastData = doc.data() as Podcast;
+          fetchedPodcasts.push({ ...podcastData, id: doc.id });
+        });
+
+        setPodcasts(fetchedPodcasts);
+      } catch (error) {
+        console.error("Error fetching podcasts: ", error);
+        // Handle error state or display a message to the user
+      }
+    };
+
+    fetchPodcasts();
+  }, []);
+
   return (
     <View style={trendingStyle.container}>
       <View style={trendingStyle.headerContainer}>
@@ -66,7 +62,7 @@ const Trending = () => {
         </Text>
       </View>
       <View style={trendingStyle.cardContainer}>
-        {data.map((item) => (
+        {podcasts.map((item) => (
           <TrendingPodCard key={item.id} item={item} />
         ))}
       </View>

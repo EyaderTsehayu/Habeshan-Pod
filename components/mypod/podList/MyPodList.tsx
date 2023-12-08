@@ -1,64 +1,71 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import myPodListstyles from "./myPodList.styles";
-import React from "react";
-import TrendingPodCard from "@/components/common/cards/trending/TrendingPodCard";
+import React, { useEffect, useState } from "react";
+import MyPodCard from "@/components/common/cards/myPod/MyPodCard";
 import { Image } from "react-native";
+import {
+  DocumentData,
+  QuerySnapshot,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+import { useUser } from "@clerk/clerk-expo";
 
+interface Podcast {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  audioUrl: string;
+  coverImageUrl: string;
+  description: string;
+  episode: number;
+}
 const MyPodList = () => {
-  const data = [
-    {
-      id: "1",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "2",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "3",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "4",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "5",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-    {
-      id: "6",
-      title: "Being an Engineer",
-      creator: "Eyader Tsehayu",
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-  ];
-  let data1 = false;
-  if (data1) {
+  const { user } = useUser();
+
+  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
+  useEffect(() => {
+    const fetchPodcasts = async () => {
+      try {
+        const q = query(
+          collection(db, "podcasts"),
+          where("userId", "==", user?.id)
+        );
+
+        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(q);
+
+        const fetchedPodcasts: Podcast[] = [];
+
+        querySnapshot.forEach((doc) => {
+          const podcastData = doc.data() as Podcast;
+          fetchedPodcasts.push({ ...podcastData, id: doc.id });
+        });
+
+        setPodcasts(fetchedPodcasts);
+      } catch (error) {
+        console.error("Error fetching podcasts: ", error);
+        // Handle error state or display a message to the user
+      }
+    };
+
+    fetchPodcasts();
+  }, []);
+
+  if (podcasts.length > 0) {
     return (
       <View style={myPodListstyles.container}>
         <View style={myPodListstyles.headerContainer}>
           <Text style={myPodListstyles.headerTitle}>My Tracks</Text>
         </View>
         <View style={myPodListstyles.cardContainer}>
-          {data.map((item) => (
-            <TrendingPodCard key={item.id} item={item} />
+          {podcasts.map((item) => (
+            <MyPodCard key={item.id} item={item} />
           ))}
         </View>
       </View>
