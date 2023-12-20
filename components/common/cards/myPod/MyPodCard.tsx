@@ -3,6 +3,9 @@ import myPodCardStyle from "./myPodCard.style";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import Colors from "@/constants/Colors";
+import { useNavigation } from "@react-navigation/native";
+import App from "../../../../app/pod-player/player";
+import { useRouter } from "expo-router";
 interface Item {
   userId: string;
   firstName: string;
@@ -11,10 +14,44 @@ interface Item {
   episode: number;
   coverImageUrl: string;
 }
+interface Podcast {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  audioUrl: string;
+  coverImageUrl: string;
+  description: string;
+  episode: number;
+}
 
-const MyPodCard = ({ item }: { item: Item }) => {
+interface MyPodCardProps {
+  item: Podcast;
+  index: number;
+  podcasts: Podcast[];
+}
+
+const MyPodCard: React.FC<MyPodCardProps> = ({ item, index, podcasts }) => {
+  const router = useRouter();
+
+  const podcastItem = {
+    index: index,
+    podcasts: podcasts,
+  };
+
+  const handlePodcastPress = () => {
+    router.push({
+      pathname: "/pod-player/player",
+      params: { index: index, data: "myPodData" },
+    });
+  };
+
   return (
-    <TouchableOpacity style={myPodCardStyle.container}>
+    <TouchableOpacity
+      style={myPodCardStyle.container}
+      onPress={handlePodcastPress}
+    >
       <View style={myPodCardStyle.description}>
         <Image
           style={myPodCardStyle.cover}
