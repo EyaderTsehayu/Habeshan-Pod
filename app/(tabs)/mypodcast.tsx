@@ -16,6 +16,7 @@ import MyPodList from "@/components/mypod/podList/MyPodList";
 
 const Page = () => {
   const router = useRouter();
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -70,7 +71,7 @@ const Page = () => {
           </View>
           <TouchableOpacity
             style={styles.uploaBtn}
-            onPress={() => router.push("/(tabs)/createPodcast")}
+            onPress={() => router.push("/createPodcast")}
           >
             <Feather name="upload-cloud" size={24} color={Colors.lightBg} />
             <Text
