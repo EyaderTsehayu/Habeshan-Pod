@@ -174,6 +174,9 @@ const AudioPlayer = () => {
           {podToPlay[currentIndex].title}
         </Text>
         <Text style={[styles.trackInfoText, styles.smallText]}>
+          {podToPlay[currentIndex].episode}
+        </Text>
+        <Text style={[styles.trackInfoText, styles.smallText]}>
           {podToPlay[currentIndex].firstName}&nbsp;
           {podToPlay[currentIndex].lastName}
         </Text>
