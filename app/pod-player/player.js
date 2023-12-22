@@ -6,13 +6,15 @@ import {
   Image,
   Text,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import { BackHandler } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import useFirebaseData from "@/hooks/fetchData";
+import Colors from "@/constants/Colors";
 
 const AudioPlayer = () => {
   const { podcasts, myPodData } = useFirebaseData();
@@ -26,6 +28,7 @@ const AudioPlayer = () => {
   const [isBuffering, setIsBuffering] = useState(true);
   const [positionMillis, setPositionMillis] = useState(0);
   const [durationMillis, setDurationMillis] = useState(0);
+  const router = useRouter();
 
   const updatePodToPlay = () => {
     if (data === "myPodData") {
@@ -171,12 +174,12 @@ const AudioPlayer = () => {
           {podToPlay[currentIndex].title}
         </Text>
         <Text style={[styles.trackInfoText, styles.smallText]}>
-          {podToPlay[currentIndex].firstName}
+          {podToPlay[currentIndex].firstName}&nbsp;
           {podToPlay[currentIndex].lastName}
         </Text>
-        <Text style={[styles.trackInfoText, styles.smallText]}>
+        {/* <Text style={[styles.trackInfoText, styles.smallText]}>
           {podToPlay[currentIndex].description}
-        </Text>
+        </Text> */}
       </View>
     ) : null;
   };
@@ -186,77 +189,196 @@ const AudioPlayer = () => {
     return <ActivityIndicator />; // Render a loading indicator until data is fetched
   }
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.albumCover}
-        source={{
-          uri: podToPlay[currentIndex].coverImageUrl,
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: Colors.lightBg },
+          headerShadowVisible: false,
+          headerTitle: "",
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 24, marginTop: 12 }}
+              onPress={() => router.back()}
+            >
+              <Ionicons
+                name="arrow-back-outline"
+                size={30}
+                color={Colors.headerText}
+              />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <View style={styles.myPods}>
+              <TouchableOpacity
+                style={{
+                  marginTop: 26,
+                  marginRight: 24,
+                }}
+              >
+                <Ionicons
+                  name="share-social"
+                  size={28}
+                  color={Colors.headerText}
+                />
+              </TouchableOpacity>
+            </View>
+          ),
         }}
       />
-      <View style={styles.controls}>
-        <TouchableOpacity style={styles.control} onPress={handlePreviousTrack}>
-          <Ionicons name="play-skip-back" size={48} color="#444" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.control} onPress={handlePlayPause}>
-          {isPlaying ? (
-            <Ionicons name="ios-pause" size={48} color="#444" />
-          ) : (
-            <Ionicons name="ios-play-circle" size={48} color="#444" />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.control} onPress={handleNextTrack}>
-          <Ionicons name="play-skip-forward" size={48} color="#444" />
-        </TouchableOpacity>
+
+      <View style={styles.imageContainer}>
+        <Image
+          style={styles.albumCover}
+          source={{
+            uri: podToPlay[currentIndex].coverImageUrl,
+          }}
+        />
+        <View style={styles.diskMask}></View>
       </View>
-      <Slider
-        style={{ width: 300, marginTop: 20 }}
-        minimumValue={0}
-        maximumValue={durationMillis}
-        value={positionMillis}
-        minimumTrackTintColor="#550088"
-        maximumTrackTintColor="#000000"
-        onSlidingComplete={handleSliderChange}
-      />
-      <Text style={styles.trackInfoText}>
-        {formatTime(positionMillis)} / {formatTime(durationMillis)}
-      </Text>
+      <View style={styles.maskContainer}>
+        <View style={styles.mask}></View>
+      </View>
+
       {renderFileInfo()}
-    </View>
+
+      <View style={styles.controlsCont}>
+        <Slider
+          style={{ width: 300, marginTop: 20 }}
+          minimumValue={0}
+          maximumValue={durationMillis}
+          value={positionMillis}
+          minimumTrackTintColor="#550088"
+          maximumTrackTintColor="#000000"
+          onSlidingComplete={handleSliderChange}
+        />
+
+        <Text style={styles.trackInfoText}>
+          {formatTime(positionMillis)} / {formatTime(durationMillis)}
+        </Text>
+
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={styles.control}
+            onPress={handlePreviousTrack}
+          >
+            <Ionicons
+              name="play-skip-back-circle-outline"
+              size={34}
+              color={Colors.lightNavy}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.control} onPress={handlePlayPause}>
+            {isPlaying ? (
+              <Ionicons name="pause-circle" size={60} color={Colors.primary} />
+            ) : (
+              <Ionicons name="play-circle" size={60} color={Colors.primary} />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.control} onPress={handleNextTrack}>
+            <Ionicons
+              name="play-skip-forward-circle-outline"
+              size={34}
+              color={Colors.lightNavy}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.lightBg,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  imageContainer: {
+    marginTop: 8,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    overflow: "hidden",
+    position: "relative",
+  },
+  albumCover: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  diskMask: {
+    position: "absolute",
+    width: 30, // Adjust size of the inner disk here
+    height: 30, // Adjust size of the inner disk here
+    borderRadius: 15, // Half of the width and height to make it circular
+    backgroundColor: Colors.lightBg, // Color of the inner disk
+    top: "50%", // Adjust to center vertically
+    left: "50%", // Adjust to center horizontally
+    marginTop: -15, // Adjust half of the height to center vertically
+    marginLeft: -15, // Adjust half of the width to center horizontally
+    borderColor: "#fff",
+    borderWidth: 2,
+  },
+  maskContainer: {
+    marginTop: 8,
+
+    position: "absolute",
+    width: 150,
+    height: 150,
     alignItems: "center",
     justifyContent: "center",
   },
-  albumCover: {
-    width: 250,
-    height: 250,
+  mask: {
+    width: 155,
+    height: 155,
+    borderRadius: 100,
+    borderWidth: 3,
+    borderColor: "#fff", // Adjust glow color and intensity here
+    backgroundColor: "transparent",
   },
   trackInfo: {
-    padding: 40,
-    backgroundColor: "#fff",
+    paddingVertical: 18,
+    paddingHorizontal: 40,
+    //  backgroundColor: "#fff",
   },
 
   trackInfoText: {
+    //  paddingTop: 10,
     textAlign: "center",
     flexWrap: "wrap",
-    color: "#550088",
+    fontFamily: "dm",
+    fontSize: 14,
+    color: Colors.lightNavy,
   },
   largeText: {
-    fontSize: 22,
+    fontSize: 18,
+    color: Colors.headerText,
+    fontFamily: "dm-b",
   },
   smallText: {
+    paddingTop: 12,
     fontSize: 16,
+    color: Colors.lightNavy,
+    fontFamily: "dm-sb",
   },
   control: {
-    margin: 20,
+    margin: 10,
   },
   controls: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  controlsCont: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    backgroundColor: Colors.cardBg,
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    // paddingVertical: 12,
   },
 });
 
