@@ -71,7 +71,7 @@ const Page = () => {
           </View>
           <TouchableOpacity
             style={styles.uploaBtn}
-            onPress={() => router.push("/createPodcast")}
+            onPress={() => router.push("/player-ui/player")}
           >
             <Feather name="upload-cloud" size={24} color={Colors.lightBg} />
             <Text
