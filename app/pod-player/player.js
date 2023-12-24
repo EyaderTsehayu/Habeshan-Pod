@@ -15,7 +15,8 @@ import { BackHandler } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import useFirebaseData from "@/hooks/fetchData";
 import Colors from "@/constants/Colors";
-
+import CommentSheet from "../../components/player/comments";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 const AudioPlayer = () => {
   const { podcasts, myPodData } = useFirebaseData();
   const { index, data } = useLocalSearchParams();
@@ -39,11 +40,11 @@ const AudioPlayer = () => {
   };
 
   useEffect(() => {
-    console.log("First rendered");
-    console.log("From Audio Player Pod to Play", podToPlay);
+    //  console.log("First rendered");
+    //  console.log("From Audio Player Pod to Play", podToPlay);
 
     updatePodToPlay();
-    console.log("From Audio Player Pod to Play 1", podToPlay);
+    // console.log("From Audio Player Pod to Play 1", podToPlay);
   }, [data, myPodData, podcasts]);
 
   useEffect(() => {
@@ -64,7 +65,7 @@ const AudioPlayer = () => {
       }
     };
 
-    console.log("From Audio Player Pod to Play 2", podToPlay);
+    // console.log("From Audio Player Pod to Play 2", podToPlay);
 
     setupAudio();
     return () => {
@@ -171,18 +172,12 @@ const AudioPlayer = () => {
     return playbackInstance ? (
       <View style={styles.trackInfo}>
         <Text style={[styles.trackInfoText, styles.largeText]}>
-          {podToPlay[currentIndex].title}
-        </Text>
-        <Text style={[styles.trackInfoText, styles.smallText]}>
-          {podToPlay[currentIndex].episode}
+          {podToPlay[currentIndex].title} - #{podToPlay[currentIndex].episode}
         </Text>
         <Text style={[styles.trackInfoText, styles.smallText]}>
           {podToPlay[currentIndex].firstName}&nbsp;
           {podToPlay[currentIndex].lastName}
         </Text>
-        {/* <Text style={[styles.trackInfoText, styles.smallText]}>
-          {podToPlay[currentIndex].description}
-        </Text> */}
       </View>
     ) : null;
   };
@@ -191,109 +186,117 @@ const AudioPlayer = () => {
   if (!podToPlay || podToPlay.length === 0) {
     return <ActivityIndicator />; // Render a loading indicator until data is fetched
   }
+  // console.log("get podcast id specific", podToPlay[currentIndex].id);
   return (
-    <SafeAreaView style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerStyle: { backgroundColor: Colors.lightBg },
-          headerShadowVisible: false,
-          headerTitle: "",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 24, marginTop: 12 }}
-              onPress={() => router.back()}
-            >
-              <Ionicons
-                name="arrow-back-outline"
-                size={30}
-                color={Colors.headerText}
-              />
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <View style={styles.myPods}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <Stack.Screen
+          options={{
+            headerStyle: { backgroundColor: Colors.cardBg },
+            headerShadowVisible: false,
+            headerTitle: "",
+            headerLeft: () => (
               <TouchableOpacity
-                style={{
-                  marginTop: 26,
-                  marginRight: 24,
-                }}
+                style={{ marginLeft: 24, marginTop: 12 }}
+                onPress={() => router.back()}
               >
                 <Ionicons
-                  name="share-social"
-                  size={28}
+                  name="arrow-back-outline"
+                  size={30}
                   color={Colors.headerText}
                 />
               </TouchableOpacity>
-            </View>
-          ),
-        }}
-      />
-
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.albumCover}
-          source={{
-            uri: podToPlay[currentIndex].coverImageUrl,
+            ),
+            headerRight: () => (
+              <View style={styles.myPods}>
+                <TouchableOpacity
+                  style={{
+                    marginTop: 26,
+                    marginRight: 24,
+                  }}
+                >
+                  <Ionicons
+                    name="share-social"
+                    size={28}
+                    color={Colors.headerText}
+                  />
+                </TouchableOpacity>
+              </View>
+            ),
           }}
         />
-        <View style={styles.diskMask}></View>
-      </View>
-      <View style={styles.maskContainer}>
-        <View style={styles.mask}></View>
-      </View>
 
-      {renderFileInfo()}
-
-      <View style={styles.controlsCont}>
-        <Slider
-          style={{ width: 300, marginTop: 20 }}
-          minimumValue={0}
-          maximumValue={durationMillis}
-          value={positionMillis}
-          minimumTrackTintColor="#550088"
-          maximumTrackTintColor="#000000"
-          onSlidingComplete={handleSliderChange}
-        />
-
-        <Text style={styles.trackInfoText}>
-          {formatTime(positionMillis)} / {formatTime(durationMillis)}
-        </Text>
-
-        <View style={styles.controls}>
-          <TouchableOpacity
-            style={styles.control}
-            onPress={handlePreviousTrack}
-          >
-            <Ionicons
-              name="play-skip-back-circle-outline"
-              size={34}
-              color={Colors.lightNavy}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.control} onPress={handlePlayPause}>
-            {isPlaying ? (
-              <Ionicons name="pause-circle" size={60} color={Colors.primary} />
-            ) : (
-              <Ionicons name="play-circle" size={60} color={Colors.primary} />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.control} onPress={handleNextTrack}>
-            <Ionicons
-              name="play-skip-forward-circle-outline"
-              size={34}
-              color={Colors.lightNavy}
-            />
-          </TouchableOpacity>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.albumCover}
+            source={{
+              uri: podToPlay[currentIndex].coverImageUrl,
+            }}
+          />
+          <View style={styles.diskMask}></View>
         </View>
-      </View>
-    </SafeAreaView>
+        <View style={styles.maskContainer}>
+          <View style={styles.mask}></View>
+        </View>
+
+        {renderFileInfo()}
+
+        <View style={styles.controlsCont}>
+          <Slider
+            style={{ width: 300, marginTop: 20 }}
+            minimumValue={0}
+            maximumValue={durationMillis}
+            value={positionMillis}
+            minimumTrackTintColor="#550088"
+            maximumTrackTintColor="#000000"
+            onSlidingComplete={handleSliderChange}
+          />
+
+          <Text style={styles.trackInfoText}>
+            {formatTime(positionMillis)} / {formatTime(durationMillis)}
+          </Text>
+
+          <View style={styles.controls}>
+            <TouchableOpacity
+              style={styles.control}
+              onPress={handlePreviousTrack}
+            >
+              <Ionicons
+                name="play-skip-back-circle-outline"
+                size={34}
+                color={Colors.lightNavy}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.control} onPress={handlePlayPause}>
+              {isPlaying ? (
+                <Ionicons
+                  name="pause-circle"
+                  size={60}
+                  color={Colors.primary}
+                />
+              ) : (
+                <Ionicons name="play-circle" size={60} color={Colors.primary} />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.control} onPress={handleNextTrack}>
+              <Ionicons
+                name="play-skip-forward-circle-outline"
+                size={34}
+                color={Colors.lightNavy}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <CommentSheet podcastId={podToPlay[currentIndex].id} />
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.lightBg,
+    backgroundColor: Colors.cardBg,
     alignItems: "center",
     justifyContent: "flex-start",
   },
@@ -378,7 +381,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    backgroundColor: Colors.cardBg,
+    backgroundColor: Colors.lightBg,
     borderRadius: 30,
     paddingHorizontal: 18,
     // paddingVertical: 12,
