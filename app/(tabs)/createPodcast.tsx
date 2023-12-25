@@ -49,7 +49,7 @@ const Page = () => {
   const [audio, setAudio] = useState<string | null>(null);
   const [podcastDetails, setPodcastDetails] = useState({
     title: "",
-    description: "",
+    genre: "",
     episode: "",
   });
 
@@ -62,14 +62,14 @@ const Page = () => {
 
   const handlePodDetailsEntered = async (
     title: string,
-    description: string,
+    genre: string,
     episode: string
   ) => {
-    setPodcastDetails({ title, description, episode });
+    setPodcastDetails({ title, genre, episode });
     console.log("Log from the main page");
 
     console.log("Title:", title);
-    console.log("Description:", description);
+    console.log("Genre:", genre);
     console.log("Episode:", episode);
     console.log("Image:", image);
     console.log("File Name:", audio);
@@ -108,8 +108,7 @@ const Page = () => {
           lastName,
           title,
           episode,
-          genre: "trial",
-          description,
+          genre,
           coverImageUrl,
           audioUrl,
           createdAt: serverTimestamp(),

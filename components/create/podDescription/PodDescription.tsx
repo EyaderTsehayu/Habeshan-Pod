@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 import podDescStyles from "./podDesc.style";
 import { Feather } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
@@ -15,13 +22,39 @@ interface PodDescriptionProps {
 const PodDescription: React.FC<PodDescriptionProps> = ({
   onPodDetailsEntered,
 }) => {
+  const tagsArray = [
+    "Technology",
+    "Business",
+    "Sport",
+    "Self Development",
+    "Entertainment",
+  ];
+
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+
   const [episode, setEpisode] = useState("");
 
+  const [searchText, setSearchText] = useState<string>("");
+  const [genreText, setGenreText] = useState<string>("");
+
+  const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+
+  const handleInputChange = (text: string) => {
+    setSearchText(text);
+    // Filter tags based on input
+    const filteredTags = tagsArray.filter((tag) =>
+      tag.toLowerCase().includes(text.toLowerCase())
+    );
+    setSuggestedTags(filteredTags);
+  };
+  const handleTagSelect = (tag: string) => {
+    setSearchText(tag);
+    setGenreText(tag);
+    setSuggestedTags([]);
+  };
   const handleUpload = () => {
-    if (title && description && episode) {
-      onPodDetailsEntered(title, description, episode);
+    if (title && genreText && episode) {
+      onPodDetailsEntered(title, genreText, episode);
     } else {
       alert("Please fill all fields");
     }
@@ -36,13 +69,7 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
           placeholderTextColor={Colors.lightNavy}
           placeholder="Podcast Title"
         />
-        <TextInput
-          style={podDescStyles.input}
-          value={description}
-          onChangeText={(text) => setDescription(text)}
-          placeholderTextColor={Colors.lightNavy}
-          placeholder="Description"
-        />
+
         <TextInput
           style={podDescStyles.input}
           value={episode}
@@ -50,6 +77,27 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
           placeholder="Episode"
           placeholderTextColor={Colors.lightNavy}
         />
+
+        <View style={podDescStyles.genreCont}>
+          <TextInput
+            style={podDescStyles.inputGenre}
+            placeholder="Search genres ..."
+            value={searchText}
+            onChangeText={handleInputChange}
+            placeholderTextColor={Colors.lightNavy}
+          />
+          <FlatList
+            data={suggestedTags}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleTagSelect(item)}>
+                <Text style={podDescStyles.tag}>{item}</Text>
+              </TouchableOpacity>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
 
         <TouchableOpacity
           style={podDescStyles.uploadBtn}
