@@ -28,6 +28,13 @@ const commentStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  previousText: {
+    paddingTop: 8,
+    paddingLeft: 12,
+    fontSize: 14,
+    fontFamily: "dm-sb",
+    color: Colors.headerText,
+  },
 });
 
 export default commentStyles;

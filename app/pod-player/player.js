@@ -40,11 +40,7 @@ const AudioPlayer = () => {
   };
 
   useEffect(() => {
-    //  console.log("First rendered");
-    //  console.log("From Audio Player Pod to Play", podToPlay);
-
     updatePodToPlay();
-    // console.log("From Audio Player Pod to Play 1", podToPlay);
   }, [data, myPodData, podcasts]);
 
   useEffect(() => {
@@ -64,8 +60,6 @@ const AudioPlayer = () => {
         console.log(e);
       }
     };
-
-    // console.log("From Audio Player Pod to Play 2", podToPlay);
 
     setupAudio();
     return () => {

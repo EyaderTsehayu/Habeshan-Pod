@@ -8,7 +8,11 @@ import {
   FlatList,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from "react-native-gesture-handler";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -28,6 +32,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useUser } from "@clerk/clerk-expo";
+import CommentCard from "../common/cards/comment/CommentCard";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -41,10 +46,17 @@ interface Comment {
   userId: string;
   comment: string;
   createdAt: any;
+  podcastId: string;
+  firstname: string | null;
+  lastname: string | null;
+  imageUri: string;
 }
 const CommentSheet: React.FC<PodcastDetailsProps> = ({ podcastId }) => {
   const { user } = useUser();
   const userId = user?.id;
+  const firstname = user?.firstName;
+  const lastname = user?.lastName;
+  const imageUri = user?.imageUrl;
 
   const translateY = useSharedValue(0);
   const [commentText, setCommentText] = useState("");
@@ -62,6 +74,9 @@ const CommentSheet: React.FC<PodcastDetailsProps> = ({ podcastId }) => {
         userId,
         comment: commentText,
         createdAt: Timestamp.now(),
+        firstname: firstname,
+        lastname: lastname,
+        imageUri: imageUri,
       };
 
       await updateDoc(podcastRef, {
@@ -159,16 +174,19 @@ const CommentSheet: React.FC<PodcastDetailsProps> = ({ podcastId }) => {
               <Feather name="send" size={24} color={Colors.headerText} />
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={comments}
-            keyExtractor={(index) => index.toString()}
-            renderItem={({ item }) => (
-              <View>
-                <Text>{item.comment}</Text>
-              </View>
-            )}
-          />
         </View>
+
+        <ScrollView style={{ flex: 1 }}>
+          {comments != null && (
+            <Text style={commentStyles.previousText}>Previous comments</Text>
+          )}
+          {comments
+            .slice()
+            .reverse()
+            .map((item, index) => (
+              <CommentCard key={comments.length - 1 - index} item={item} />
+            ))}
+        </ScrollView>
       </Animated.View>
     </GestureDetector>
   );
