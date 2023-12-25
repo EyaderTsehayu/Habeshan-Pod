@@ -3,6 +3,7 @@ import trendingCardStyle from "./trendingPodCard.style";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import Colors from "@/constants/Colors";
+import { useRouter } from "expo-router";
 interface Item {
   userId: string;
   firstName: string;
@@ -11,10 +12,47 @@ interface Item {
   episode: number;
   coverImageUrl: string;
 }
+interface Podcast {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  audioUrl: string;
+  coverImageUrl: string;
+  description: string;
+  episode: number;
+}
 
-const TrendingPodCard = ({ item }: { item: Item }) => {
+interface MyPodCardProps {
+  item: Podcast;
+  index: number;
+  podcasts: Podcast[];
+}
+
+const TrendingPodCard: React.FC<MyPodCardProps> = ({
+  item,
+  index,
+  podcasts,
+}) => {
+  const router = useRouter();
+
+  const podcastItem = {
+    index: index,
+    podcasts: podcasts,
+  };
+
+  const handlePodcastPress = () => {
+    router.push({
+      pathname: "/pod-player/player",
+      params: { index: index, data: "trendingPodData" },
+    });
+  };
   return (
-    <TouchableOpacity style={trendingCardStyle.container}>
+    <TouchableOpacity
+      style={trendingCardStyle.container}
+      onPress={handlePodcastPress}
+    >
       <View style={trendingCardStyle.description}>
         <Image
           style={trendingCardStyle.cover}

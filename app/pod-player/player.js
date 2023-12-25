@@ -18,7 +18,7 @@ import Colors from "@/constants/Colors";
 import CommentSheet from "../../components/player/comments";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 const AudioPlayer = () => {
-  const { podcasts, myPodData } = useFirebaseData();
+  const { podcasts, myPodData, trendingPodData } = useFirebaseData();
   const { index, data } = useLocalSearchParams();
   const [podToPlay, setPodToPlay] = useState([]);
 
@@ -34,6 +34,8 @@ const AudioPlayer = () => {
   const updatePodToPlay = () => {
     if (data === "myPodData") {
       setPodToPlay(myPodData);
+    } else if (data === "trendingPodData") {
+      setPodToPlay(trendingPodData);
     } else {
       setPodToPlay(podcasts);
     }

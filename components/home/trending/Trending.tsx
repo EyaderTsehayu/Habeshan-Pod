@@ -9,6 +9,7 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import useFirebaseData from "@/hooks/fetchData";
 
 interface Podcast {
   id: string;
@@ -23,33 +24,16 @@ interface Podcast {
 }
 
 const Trending: React.FC = () => {
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const { trendingPodData } = useFirebaseData();
+  console.log("trending pod data from trending", trendingPodData);
 
-  useEffect(() => {
-    const fetchPodcasts = async () => {
-      try {
-        const podcastCollection = collection(db, "podcasts");
-        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-          podcastCollection
-        );
-        console.log(querySnapshot);
+  // const [localTrendingPodData, setLocalTrendingPodData] = useState<Podcast[]>(
+  //   []
+  // );
 
-        const fetchedPodcasts: Podcast[] = [];
-
-        querySnapshot.forEach((doc) => {
-          const podcastData = doc.data() as Podcast;
-          fetchedPodcasts.push({ ...podcastData, id: doc.id });
-        });
-
-        setPodcasts(fetchedPodcasts);
-      } catch (error) {
-        console.error("Error fetching podcasts: ", error);
-        // Handle error state or display a message to the user
-      }
-    };
-
-    fetchPodcasts();
-  }, []);
+  // useEffect(() => {
+  //   setLocalTrendingPodData(trendingPodData);
+  // }, [trendingPodData]);
 
   return (
     <View style={trendingStyle.container}>
@@ -58,12 +42,20 @@ const Trending: React.FC = () => {
         <Text style={trendingStyle.showAllBtn}>
           <TouchableOpacity>
             <Text style={trendingStyle.subText}>Show all</Text>
-          </TouchableOpacity>{" "}
+          </TouchableOpacity>
         </Text>
       </View>
       <View style={trendingStyle.cardContainer}>
-        {podcasts.map((item) => (
+        {/* {podcasts.map((item) => (
           <TrendingPodCard key={item.id} item={item} />
+        ))} */}
+        {trendingPodData.map((item, index) => (
+          <TrendingPodCard
+            key={item.id}
+            item={item}
+            index={index}
+            podcasts={trendingPodData}
+          />
         ))}
       </View>
     </View>

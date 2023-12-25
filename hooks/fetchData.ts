@@ -22,6 +22,8 @@ interface Podcast {
 const useFirebaseData = () => {
   const [myPodData, setMyPodData] = useState<Podcast[]>([]);
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const [trendingPodData, setTrendingPodData] = useState<Podcast[]>([]);
+
   const { user } = useUser();
 
   useEffect(() => {
@@ -56,7 +58,22 @@ const useFirebaseData = () => {
     setMyPodData(filteredMyPodData);
   }, [podcasts]);
 
-  return { podcasts, myPodData };
+  useEffect(() => {
+    const filteredMyPodData = podcasts.filter(
+      (item) => item.userId === user?.id
+    );
+    setMyPodData(filteredMyPodData);
+  }, [podcasts]);
+
+  useEffect(() => {
+    const filteredArray = podcasts
+      .slice(Math.max(podcasts.length - 5, 0))
+      .reverse();
+
+    setTrendingPodData(filteredArray);
+  }, [podcasts]);
+
+  return { podcasts, myPodData, trendingPodData };
 };
 
 export default useFirebaseData;
