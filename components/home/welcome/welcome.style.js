@@ -29,6 +29,7 @@ const welcomeStyles = StyleSheet.create({
     fontFamily: "dm",
     width: "100%",
     height: "100%",
+    fontSize: 16,
     paddingHorizontal: 25,
     color: Colors.primaryText,
   },

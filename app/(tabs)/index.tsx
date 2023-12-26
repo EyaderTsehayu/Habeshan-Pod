@@ -9,9 +9,10 @@ import Trending from "@/components/home/trending/Trending";
 const Page = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>("");
+
   const handleSearch = () => {
     if (searchTerm) {
-      router.push("/");
+      router.push(`../search/${searchTerm}`);
     }
   };
   return (

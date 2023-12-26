@@ -24,7 +24,8 @@ const Welcome: React.FC<WelcomeProps> = ({
             style={welcomeStyles.searchInput}
             value={searchTerm}
             onChangeText={(text) => setSearchTerm(text)}
-            placeholder="What are you looking for?"
+            placeholder="Search your favorite pods  . . ."
+            placeholderTextColor={Colors.lightBg1}
           />
         </View>
         <TouchableOpacity style={welcomeStyles.searchBtn} onPress={handleClick}>
@@ -34,7 +35,7 @@ const Welcome: React.FC<WelcomeProps> = ({
       <View style={welcomeStyles.hero}>
         <View style={welcomeStyles.welcomeMsgContainer}>
           <Text style={welcomeStyles.welcomeMsg}>
-            Discover your favorite{" "}
+            Discover your favorite
             <Text style={{ fontFamily: "dm-b", fontSize: 40 }}>podcast</Text>
           </Text>
         </View>

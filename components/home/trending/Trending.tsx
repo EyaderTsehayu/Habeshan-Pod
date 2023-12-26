@@ -25,15 +25,6 @@ interface Podcast {
 
 const Trending: React.FC = () => {
   const { trendingPodData } = useFirebaseData();
-  console.log("trending pod data from trending", trendingPodData);
-
-  // const [localTrendingPodData, setLocalTrendingPodData] = useState<Podcast[]>(
-  //   []
-  // );
-
-  // useEffect(() => {
-  //   setLocalTrendingPodData(trendingPodData);
-  // }, [trendingPodData]);
 
   return (
     <View style={trendingStyle.container}>
