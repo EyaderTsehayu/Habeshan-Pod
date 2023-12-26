@@ -5,6 +5,7 @@ import {
   QuerySnapshot,
   DocumentData,
   getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 import { useUser } from "@clerk/clerk-expo";
 interface Podcast {
@@ -27,22 +28,20 @@ const useFirebaseData = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    const fetchPodcasts = async () => {
+    const fetchPodcasts = () => {
       try {
         const podcastCollection = collection(db, "podcasts");
-        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-          podcastCollection
-        );
-        console.log(querySnapshot);
-
-        const fetchedPodcasts: Podcast[] = [];
-
-        querySnapshot.forEach((doc) => {
-          const podcastData = doc.data() as Podcast;
-          fetchedPodcasts.push({ ...podcastData, id: doc.id });
+        const unsubscribe = onSnapshot(podcastCollection, (snapshot) => {
+          const fetchedPodcasts: Podcast[] = [];
+          snapshot.forEach((doc) => {
+            const podcastData = doc.data() as Podcast;
+            fetchedPodcasts.push({ ...podcastData, id: doc.id });
+          });
+          setPodcasts(fetchedPodcasts);
         });
 
-        setPodcasts(fetchedPodcasts);
+        // Return a cleanup function to unsubscribe when the component unmounts
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching podcasts: ", error);
       }
