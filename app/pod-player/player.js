@@ -7,6 +7,7 @@ import {
   Text,
   ActivityIndicator,
   SafeAreaView,
+  Share,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -161,8 +162,29 @@ const AudioPlayer = () => {
     return "0:00";
   };
 
+  const sharePodcast = async () => {
+    try {
+      const podcastTitle = podToPlay[currentIndex].title;
+      const podcastURL = podToPlay[currentIndex].audioUrl;
+      const thumbnailURL = podToPlay[currentIndex].coverImageUrl;
+
+      const message = `${podcastTitle}\n${podcastURL}`;
+
+      const options = {
+        title: podcastTitle,
+        message: message,
+        url: podcastURL,
+        imageUrl: thumbnailURL,
+      };
+
+      await Share.share(options);
+    } catch (error) {
+      console.log("Error while sharing:", error.message);
+    }
+  };
+
   if (!podToPlay || podToPlay.length === 0) {
-    return <ActivityIndicator />; // Render a loading indicator until data is fetched
+    return <ActivityIndicator />;
   }
   const renderFileInfo = () => {
     return playbackInstance ? (
@@ -206,6 +228,7 @@ const AudioPlayer = () => {
             headerRight: () => (
               <View style={styles.myPods}>
                 <TouchableOpacity
+                  onPress={sharePodcast}
                   style={{
                     marginTop: 26,
                     marginRight: 24,
