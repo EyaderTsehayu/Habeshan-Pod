@@ -75,7 +75,7 @@ const SearchedPodCard: React.FC<MyPodCardProps> = ({
         <AntDesign
           style={myPodCardStyle.playBtn}
           name="play"
-          size={58}
+          size={50}
           color={Colors.primary}
         />
       </TouchableOpacity>

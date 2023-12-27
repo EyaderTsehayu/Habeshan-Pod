@@ -48,10 +48,13 @@ const TrendingPodCard: React.FC<MyPodCardProps> = ({
       params: { index: index, data: "trendingPodData" },
     });
   };
+  const handleToDetails = () => {
+    router.push(`../pod-details/${item.id}`);
+  };
   return (
     <TouchableOpacity
       style={trendingCardStyle.container}
-      onPress={handlePodcastPress}
+      onPress={handleToDetails}
     >
       <View style={trendingCardStyle.description}>
         <Image
@@ -68,11 +71,11 @@ const TrendingPodCard: React.FC<MyPodCardProps> = ({
           </Text>
         </View>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handlePodcastPress}>
         <AntDesign
           style={trendingCardStyle.playBtn}
           name="play"
-          size={58}
+          size={50}
           color={Colors.primary}
         />
       </TouchableOpacity>

@@ -46,11 +46,13 @@ const MyPodCard: React.FC<MyPodCardProps> = ({ item, index, podcasts }) => {
       params: { index: index, data: "myPodData" },
     });
   };
-
+  const handleToDetails = () => {
+    router.push(`../pod-details/${item.id}`);
+  };
   return (
     <TouchableOpacity
       style={myPodCardStyle.container}
-      onPress={handlePodcastPress}
+      onPress={handleToDetails}
     >
       <View style={myPodCardStyle.description}>
         <Image
@@ -65,11 +67,11 @@ const MyPodCard: React.FC<MyPodCardProps> = ({ item, index, podcasts }) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handlePodcastPress}>
         <AntDesign
           style={myPodCardStyle.playBtn}
           name="play"
-          size={58}
+          size={50}
           color={Colors.primary}
         />
       </TouchableOpacity>
