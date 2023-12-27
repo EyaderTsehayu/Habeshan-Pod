@@ -14,19 +14,20 @@ import useFirebaseData from "@/hooks/fetchData";
 import SearchedPodCard from "@/components/common/cards/search/SearchedPodCard";
 import Colors from "@/constants/Colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import RelatedPodCard from "../../components/common/cards/Related/RelatedPodCard";
+import RelatedPodCard from "../../components/common/cards/related/RelatedPodCard";
 
 const PodDetails = () => {
   const params = useLocalSearchParams();
-  // const router = useRouter();
+
+  const router = useRouter();
   const { podcasts } = useFirebaseData();
   const [searchResult, setSearchResult] = useState([]);
   const [searchRelated, setSearchRelated] = useState([]);
+  const index = podcasts.findIndex((podcast) => podcast.id === params.id);
 
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchError, setSearchError] = useState(null);
   const [page, setPage] = useState(1);
-
   const handleSearch = useCallback(() => {
     setSearchLoader(true);
     setSearchResult([]);
@@ -58,7 +59,12 @@ const PodDetails = () => {
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
-
+  const handlePodcastPress = () => {
+    router.push({
+      pathname: "/pod-player/player",
+      params: { index: index, data: "searchedPod" },
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.lightBg1 }}>
       <Stack.Screen
@@ -86,7 +92,10 @@ const PodDetails = () => {
             </ImageBackground>
             <View style={styles.actionCont}>
               <View style={styles.actionContmain}>
-                <TouchableOpacity style={styles.play}>
+                <TouchableOpacity
+                  style={styles.play}
+                  onPress={handlePodcastPress}
+                >
                   <Ionicons
                     name="ios-play-circle"
                     size={36}
@@ -126,14 +135,20 @@ const PodDetails = () => {
               </View>
               <View style={styles.relatedCont}>
                 <Text style={styles.relatedDesc}>Related podcasts</Text>
-                <FlatList
-                  data={searchRelated}
-                  renderItem={({ item }) => <RelatedPodCard item={item} />}
-                  keyExtractor={(item) => item.id}
-                  horizontal
-                  contentContainerStyle={{ columnGap: 25 }}
-                  showsHorizontalScrollIndicator={false}
-                />
+                {searchRelated && searchRelated.length > 0 ? (
+                  <FlatList
+                    data={searchRelated}
+                    renderItem={({ item }) => <RelatedPodCard item={item} />}
+                    keyExtractor={(item) => item.id}
+                    horizontal
+                    contentContainerStyle={{ columnGap: 25 }}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                ) : (
+                  <Text style={styles.noRelatedDesc}>
+                    No related podcasts found
+                  </Text>
+                )}
               </View>
             </View>
           </>
@@ -238,6 +253,14 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     fontFamily: "dm",
     fontSize: 18,
+    color: Colors.headerText,
+  },
+  noRelatedDesc: {
+    textAlign: "center",
+    paddingTop: 26,
+    paddingBottom: 12,
+    fontFamily: "dm-b",
+    fontSize: 24,
     color: Colors.headerText,
   },
 });
