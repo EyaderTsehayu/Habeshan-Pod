@@ -7,6 +7,7 @@ import {
   View,
   StyleSheet,
   ImageBackground,
+  Share,
 } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Text, SafeAreaView } from "react-native";
@@ -65,6 +66,26 @@ const PodDetails = () => {
       params: { index: index, data: "searchedPod" },
     });
   };
+  const sharePodcast = async () => {
+    try {
+      const podcastTitle = searchResult[0].title;
+      const podcastURL = searchResult[0].audioUrl;
+      const thumbnailURL = searchResult[0].coverImageUrl;
+
+      const message = `${podcastTitle}\n${podcastURL}`;
+
+      const options = {
+        title: podcastTitle,
+        message: message,
+        url: podcastURL,
+        imageUrl: thumbnailURL,
+      };
+
+      await Share.share(options);
+    } catch (error) {
+      console.log("Error while sharing:", error.message);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.lightBg1 }}>
       <Stack.Screen
@@ -112,7 +133,7 @@ const PodDetails = () => {
                       color={Colors.headerText}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.like}>
+                  <TouchableOpacity onPress={sharePodcast} style={styles.like}>
                     <Ionicons
                       name="ios-share-social"
                       size={30}
