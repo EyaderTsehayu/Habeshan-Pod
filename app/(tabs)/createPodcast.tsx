@@ -51,6 +51,7 @@ const Page = () => {
     title: "",
     genre: "",
     episode: "",
+    description: "",
   });
 
   const handleFilePicked = (name: string | null, size: number | null) => {
@@ -63,9 +64,10 @@ const Page = () => {
   const handlePodDetailsEntered = async (
     title: string,
     genre: string,
-    episode: string
+    episode: string,
+    description: string
   ) => {
-    setPodcastDetails({ title, genre, episode });
+    setPodcastDetails({ title, genre, episode, description });
     console.log("Log from the main page");
 
     console.log("Title:", title);
@@ -108,6 +110,7 @@ const Page = () => {
           lastName,
           title,
           episode,
+          description,
           genre,
           coverImageUrl,
           audioUrl,

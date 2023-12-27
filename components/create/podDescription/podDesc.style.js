@@ -5,7 +5,7 @@ const podDescStyles = new StyleSheet.create({
   container: {
     backgroundColor: Colors.cardBg,
     //marginTop: 10,
-    paddingVertical: 30,
+    paddingVertical: 7,
     paddingHorizontal: 24,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
@@ -39,7 +39,6 @@ const podDescStyles = new StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     borderRadius: 18,
-    marginTop: 8,
   },
   btnText: {
     fontFamily: "dm-b",

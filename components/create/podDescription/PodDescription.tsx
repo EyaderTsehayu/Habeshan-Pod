@@ -15,7 +15,8 @@ interface PodDescriptionProps {
   onPodDetailsEntered: (
     title: string,
     description: string,
-    episode: string
+    episode: string,
+    genreText: string
   ) => void;
 }
 
@@ -31,12 +32,11 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
   ];
 
   const [title, setTitle] = useState("");
-
   const [episode, setEpisode] = useState("");
+  const [genreText, setGenreText] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const [searchText, setSearchText] = useState<string>("");
-  const [genreText, setGenreText] = useState<string>("");
-
   const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
 
   const handleInputChange = (text: string) => {
@@ -53,8 +53,8 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
     setSuggestedTags([]);
   };
   const handleUpload = () => {
-    if (title && genreText && episode) {
-      onPodDetailsEntered(title, genreText, episode);
+    if (title && genreText && episode && description) {
+      onPodDetailsEntered(title, genreText, episode, description);
     } else {
       alert("Please fill all fields");
     }
@@ -77,7 +77,13 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
           placeholder="Episode"
           placeholderTextColor={Colors.lightNavy}
         />
-
+        <TextInput
+          style={podDescStyles.input}
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+          placeholder="Description"
+          placeholderTextColor={Colors.lightNavy}
+        />
         <View style={podDescStyles.genreCont}>
           <TextInput
             style={podDescStyles.inputGenre}

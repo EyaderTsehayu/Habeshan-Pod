@@ -128,9 +128,7 @@ const PodDetails = () => {
               <View style={styles.aboutCont}>
                 <Text style={styles.aboutDesc}>About this podcast</Text>
                 <Text style={styles.desctext}>
-                  From machine learning algorithms to neural networks, we
-                  unravel the complexities of AI in a way that's both
-                  informative and accessible.
+                  {searchResult[0].description}
                 </Text>
               </View>
               <View style={styles.relatedCont}>
