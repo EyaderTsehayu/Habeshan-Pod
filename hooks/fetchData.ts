@@ -19,10 +19,17 @@ interface Podcast {
   description: string;
   episode: number;
 }
+interface Users {
+  id: string;
+  firstName: string;
+  lastName: string;
+  userId: string;
+}
 
 const useFirebaseData = () => {
   const [myPodData, setMyPodData] = useState<Podcast[]>([]);
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const [users, setUsers] = useState<Users[]>([]);
   const [trendingPodData, setTrendingPodData] = useState<Podcast[]>([]);
 
   const { user } = useUser();
@@ -51,6 +58,29 @@ const useFirebaseData = () => {
   }, []);
 
   useEffect(() => {
+    const fetchUsers = () => {
+      try {
+        const userCollection = collection(db, "users");
+        const unsubscribe = onSnapshot(userCollection, (snapshot) => {
+          const fetchedUsers: Users[] = [];
+          snapshot.forEach((doc) => {
+            const userData = doc.data() as Users;
+            fetchedUsers.push({ ...userData, id: doc.id });
+          });
+          setUsers(fetchedUsers);
+        });
+        //  console.log("users from the hook", users);
+
+        // Return a cleanup function to unsubscribe when the component unmounts
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Error fetching podcasts: ", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  useEffect(() => {
     const filteredMyPodData = podcasts.filter(
       (item) => item.userId === user?.id
     );
@@ -72,7 +102,7 @@ const useFirebaseData = () => {
     setTrendingPodData(filteredArray);
   }, [podcasts]);
 
-  return { podcasts, myPodData, trendingPodData };
+  return { podcasts, myPodData, trendingPodData, users };
 };
 
 export default useFirebaseData;
