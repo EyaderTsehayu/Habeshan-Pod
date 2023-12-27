@@ -10,9 +10,10 @@ import {
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Text, SafeAreaView } from "react-native";
 import useFirebaseData from "@/hooks/fetchData";
-import MyPodCard from "@/components/common/cards/myPod/MyPodCard";
+import SearchedPodCard from "@/components/common/cards/search/SearchedPodCard";
 import Colors from "@/constants/Colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+//import "../pod-details/[id]";
 
 const PodSearch = () => {
   const params = useLocalSearchParams();
@@ -33,7 +34,8 @@ const PodSearch = () => {
         return item.title.toLowerCase().includes(params.id.toLowerCase());
       });
       setSearchResult(filteredPodcasts);
-      console.log("filtered pods", filteredPodcasts);
+
+      // console.log("filtered pods", filteredPodcasts);
     } catch (error) {
       setSearchError(error);
       console.log(error);
@@ -55,8 +57,6 @@ const PodSearch = () => {
   };
 
   useEffect(() => {
-    console.log(params.id);
-    console.log(podcasts);
     handleSearch();
   }, [podcasts]);
   return (
@@ -84,12 +84,12 @@ const PodSearch = () => {
       <FlatList
         data={searchResult}
         renderItem={({ item, index }) => (
-          <MyPodCard
+          <SearchedPodCard
             key={index}
             item={item}
             index={index}
-            podcasts={podcasts}
-            //handleNavigate={() => router.push(`/pod-details/${item}`)}
+            podcasts={searchResult}
+            // handleNavigate={() => router.push(`../pod-details/${item.id}`)}
           />
         )}
         keyExtractor={(item) => item.id}
