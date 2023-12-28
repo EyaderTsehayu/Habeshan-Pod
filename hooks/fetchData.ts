@@ -31,6 +31,7 @@ const useFirebaseData = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [users, setUsers] = useState<Users[]>([]);
   const [trendingPodData, setTrendingPodData] = useState<Podcast[]>([]);
+  const [toFollow, setToFollow] = useState<Podcast[]>([]);
 
   const { user } = useUser();
 
@@ -95,6 +96,22 @@ const useFirebaseData = () => {
   }, [podcasts]);
 
   useEffect(() => {
+    const uniqueUserIds = new Set();
+    const filteredPodcasts = podcasts.filter((item) => {
+      if (uniqueUserIds.has(item.userId)) {
+        return false;
+      } else {
+        uniqueUserIds.add(item.userId);
+        return true; // Keep if userId is unique
+      }
+    });
+
+    // console.log("filtered unique", filteredPodcasts);
+
+    setToFollow(filteredPodcasts);
+  }, [podcasts]);
+
+  useEffect(() => {
     const filteredArray = podcasts
       .slice(Math.max(podcasts.length - 5, 0))
       .reverse();
@@ -102,7 +119,7 @@ const useFirebaseData = () => {
     setTrendingPodData(filteredArray);
   }, [podcasts]);
 
-  return { podcasts, myPodData, trendingPodData, users };
+  return { podcasts, myPodData, trendingPodData, toFollow };
 };
 
 export default useFirebaseData;
