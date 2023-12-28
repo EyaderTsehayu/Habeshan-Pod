@@ -1,86 +1,62 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import recommendedPodStyles from "./recommendedPods.styles";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RecommendedPodCard from "@/components/common/cards/recommendedPod/RecommendedPodCard";
-
+import useFirebaseData from "@/hooks/fetchData";
+import { useUser } from "@clerk/clerk-expo";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+interface Podcast {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  audioUrl: string;
+  coverImageUrl: string;
+  description: string;
+  episode: number;
+}
 const RecommendedPods = () => {
-  const data = [
-    {
-      id: "1",
-      title: "You're Wrong About",
-      creator: "Richard Hendric",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=1GfVd3agdJVzO8yp83HBovnSJHfBg0vLP",
-    },
-    {
-      id: "2",
-      title: "Bang Bang",
-      creator: "Erlich Bachman",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=1NC99UjyDz5aEuhXl90_jVKrudVImFlMd",
-    },
-    {
-      id: "3",
-      title: "Ask The Mentor",
-      creator: "Gilfoyel",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=126CNPEjWla_7kJVzU4blTJAEupSUrknr",
-    },
-    {
-      id: "4",
-      title: "You're Wrong About",
+  const [filtered, setFiltered] = useState<Podcast[]>([]);
 
-      creator: "Denish",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=1GfVd3agdJVzO8yp83HBovnSJHfBg0vLP",
-    },
-    {
-      id: "5",
-      title: "Bang Bang",
-      creator: "Jared",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=1NC99UjyDz5aEuhXl90_jVKrudVImFlMd",
-    },
-    {
-      id: "6",
-      title: "Ask The Mentor",
-      creator: "Jien yang",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=126CNPEjWla_7kJVzU4blTJAEupSUrknr",
-    },
-    {
-      id: "7",
-      title: "Silcon valley stories",
-      creator: "Jien Yang",
-      podcasts: 12,
-      followers: 2230,
-      likes: 94520,
-      cover:
-        "https://drive.google.com/uc?export=view&id=1KbOjPhyM_4pNN8INfKEmkLu5E9BhP-Fr",
-    },
-  ];
+  const { toFollow } = useFirebaseData();
+  const { user } = useUser();
+  const userId = user?.id;
+
+  useEffect(() => {
+    const fetchFollowedPodcasts = async () => {
+      try {
+        const usersCollection = collection(db, "users");
+        const userDoc = doc(usersCollection, userId);
+        const userDocSnapshot = await getDoc(userDoc);
+
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          const subscribedPodcastCreators: string[] =
+            userData.subscribedPodcastCreators || [];
+
+          // Filter out followed podcasts from recommendations
+          const filteredPods = toFollow.filter(
+            (item) => !subscribedPodcastCreators.includes(item.userId)
+          );
+
+          setFiltered(filteredPods);
+        }
+      } catch (error) {
+        console.error("Error fetching followed podcasts:", error);
+      }
+    };
+
+    if (userId) {
+      fetchFollowedPodcasts();
+    }
+  }, [toFollow, userId]);
+
   return (
     <View style={recommendedPodStyles.container}>
       <View style={recommendedPodStyles.cardContainer}>
-        {data.map((item) => (
+        {filtered.map((item) => (
           <RecommendedPodCard key={item.id} item={item} />
         ))}
       </View>
