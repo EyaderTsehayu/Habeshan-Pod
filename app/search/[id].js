@@ -16,7 +16,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 //import "../pod-details/[id]";
 
 const PodSearch = () => {
-  const params = useLocalSearchParams();
+  const { id, data } = useLocalSearchParams();
   const router = useRouter();
   const { podcasts } = useFirebaseData();
   const [searchResult, setSearchResult] = useState([]);
@@ -30,10 +30,17 @@ const PodSearch = () => {
     setSearchResult([]);
 
     try {
-      const filteredPodcasts = podcasts.filter((item) => {
-        return item.title.toLowerCase().includes(params.id.toLowerCase());
-      });
-      setSearchResult(filteredPodcasts);
+      if (data == "filterByGenre") {
+        const filteredPodcasts = podcasts.filter((item) => {
+          return item.genre.toLowerCase().includes(id.toLowerCase());
+        });
+        setSearchResult(filteredPodcasts);
+      } else if (data == "filterByTitle") {
+        const filteredPodcasts = podcasts.filter((item) => {
+          return item.title.toLowerCase().includes(id.toLowerCase());
+        });
+        setSearchResult(filteredPodcasts);
+      }
 
       // console.log("filtered pods", filteredPodcasts);
     } catch (error) {
@@ -99,7 +106,7 @@ const PodSearch = () => {
             <View style={styles.container}>
               <Text style={styles.searchTitle}>
                 <Text style={{ fontSize: 38 }}>Results for</Text>
-                <Text style={{ fontSize: 40 }}> "{params.id}" </Text>
+                <Text style={{ fontSize: 40 }}> "{id}" </Text>
               </Text>
               <Text style={styles.noOfSearchedJobs}>
                 Filtered Podcasts - {searchResult.length}
