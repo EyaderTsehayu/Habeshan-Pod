@@ -16,9 +16,14 @@ import SearchedPodCard from "@/components/common/cards/search/SearchedPodCard";
 import Colors from "@/constants/Colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import RelatedPodCard from "../../components/common/cards/related/RelatedPodCard";
+import { useUser } from "@clerk/clerk-expo";
+import { db } from "@/firebaseConfig";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 const PodDetails = () => {
   const params = useLocalSearchParams();
+  const { user } = useUser();
+  const userId = user?.id;
 
   const router = useRouter();
   const { podcasts } = useFirebaseData();
@@ -29,6 +34,8 @@ const PodDetails = () => {
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchError, setSearchError] = useState(null);
   const [page, setPage] = useState(1);
+  const [liked, setLiked] = useState(false);
+
   const handleSearch = useCallback(() => {
     setSearchLoader(true);
     setSearchResult([]);
@@ -55,6 +62,48 @@ const PodDetails = () => {
     );
     //console.log("Related Pods", filteredPodcasts);
     setSearchRelated(filteredPodcasts);
+  };
+
+  useEffect(() => {
+    const checkLiked = async () => {
+      try {
+        const podcastDoc = doc(collection(db, "podcasts"), params.id);
+        const podcastDocSnapshot = await getDoc(podcastDoc);
+
+        if (podcastDocSnapshot.exists()) {
+          const podcastData = podcastDocSnapshot.data();
+          if (podcastData?.likes && podcastData.likes.includes(userId)) {
+            setLiked(true);
+          } else {
+            setLiked(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching podcast data:", error);
+      }
+    };
+
+    checkLiked();
+  }, [params.id, userId]);
+
+  const handleLike = async () => {
+    try {
+      const podcastDoc = doc(collection(db, "podcasts"), params.id);
+      const podcastDocSnapshot = await getDoc(podcastDoc);
+
+      let likedBy = podcastDocSnapshot.data()?.likes || [];
+
+      if (likedBy.includes(userId)) {
+        likedBy = likedBy.filter((id) => id !== userId);
+      } else {
+        likedBy.push(userId);
+      }
+
+      await updateDoc(podcastDoc, { likes: likedBy });
+      setLiked(!liked);
+    } catch (error) {
+      console.error("Error updating likes for podcast:", error);
+    }
   };
 
   useEffect(() => {
@@ -126,11 +175,11 @@ const PodDetails = () => {
                 </TouchableOpacity>
 
                 <View style={styles.sharePlayCont}>
-                  <TouchableOpacity style={styles.share}>
+                  <TouchableOpacity style={styles.share} onPress={handleLike}>
                     <Ionicons
-                      name="ios-heart-outline"
+                      name={liked ? "ios-heart" : "ios-heart-outline"}
                       size={30}
-                      color={Colors.headerText}
+                      color={liked ? Colors.secondary : Colors.headerText}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={sharePodcast} style={styles.like}>
