@@ -23,7 +23,12 @@ const Genres: React.FC = () => {
   ];
 
   const router = useRouter();
-
+  const handlePodcastPress = (genre: string) => {
+    router.push({
+      pathname: "/search/[id]",
+      params: { id: genre, data: "filterByGenre" },
+    });
+  };
   return (
     <View style={genreStyles.container}>
       <View style={genreStyles.headerContainer}>
@@ -38,7 +43,7 @@ const Genres: React.FC = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={genreStyles.btn}
-            onPress={() => router.push(item.uri)}
+            onPress={() => handlePodcastPress(item.genre)}
           >
             <View style={{ display: "flex", gap: 6, alignItems: "center" }}>
               <MaterialCommunityIcons
