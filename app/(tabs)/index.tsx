@@ -12,7 +12,10 @@ const Page = () => {
 
   const handleSearch = () => {
     if (searchTerm) {
-      router.push(`../search/${searchTerm}`);
+      router.push({
+        pathname: "/search/[id]",
+        params: { id: searchTerm, data: "filterByTitle" },
+      });
     }
   };
   return (
