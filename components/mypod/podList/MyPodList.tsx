@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import myPodListstyles from "./myPodList.styles";
 import React, { useEffect, useState } from "react";
 import MyPodCard from "@/components/common/cards/myPod/MyPodCard";
 import { Image } from "react-native";
 import useFirebaseData from "@/hooks/fetchData";
+import Colors from "@/constants/Colors";
 
 interface Podcast {
   id: string;
@@ -18,6 +19,24 @@ interface Podcast {
 }
 const MyPodList = () => {
   const { myPodData } = useFirebaseData();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulating data loading delay with setTimeout
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Adjust this delay as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={myPodListstyles.activity}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   if (myPodData.length > 0) {
     return (

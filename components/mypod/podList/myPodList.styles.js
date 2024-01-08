@@ -2,6 +2,9 @@ import Colors from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const myPodListstyles = StyleSheet.create({
+  activity: {
+    paddingTop: 30,
+  },
   container: {
     paddingHorizontal: 12,
     paddingVertical: 14,

@@ -2,6 +2,9 @@ import Colors from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const trendingCardStyle = StyleSheet.create({
+  activity: {
+    height: "100%",
+  },
   container: {
     backgroundColor: Colors.cardBg,
     //marginTop: 20,

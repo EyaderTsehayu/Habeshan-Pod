@@ -1,4 +1,10 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import trendingCardStyle from "./trendingPodCard.style";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
@@ -51,6 +57,7 @@ const TrendingPodCard: React.FC<MyPodCardProps> = ({
   const handleToDetails = () => {
     router.push(`../pod-details/${item.id}`);
   };
+
   return (
     <TouchableOpacity
       style={trendingCardStyle.container}
