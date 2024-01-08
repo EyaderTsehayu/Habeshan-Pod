@@ -2,6 +2,10 @@ import Colors from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const trendingStyle = StyleSheet.create({
+  activity: {
+    paddingBottom: 50,
+    paddingTop: 30,
+  },
   container: {
     paddingHorizontal: 12,
     paddingVertical: 14,

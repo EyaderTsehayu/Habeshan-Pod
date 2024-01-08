@@ -1,15 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import trendingStyle from "./trending.style";
 import React, { useEffect, useState } from "react";
 import TrendingPodCard from "@/components/common/cards/trending/TrendingPodCard";
-import {
-  collection,
-  getDocs,
-  DocumentData,
-  QuerySnapshot,
-} from "firebase/firestore";
-import { db } from "@/firebaseConfig";
 import useFirebaseData from "@/hooks/fetchData";
+import Colors from "@/constants/Colors";
 
 interface Podcast {
   id: string;
@@ -40,14 +34,20 @@ const Trending: React.FC = () => {
         {/* {podcasts.map((item) => (
           <TrendingPodCard key={item.id} item={item} />
         ))} */}
-        {trendingPodData.map((item, index) => (
-          <TrendingPodCard
-            key={item.id}
-            item={item}
-            index={index}
-            podcasts={trendingPodData}
-          />
-        ))}
+        {trendingPodData.length < 1 ? (
+          <View style={trendingStyle.activity}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        ) : (
+          trendingPodData.map((item, index) => (
+            <TrendingPodCard
+              key={item.id}
+              item={item}
+              index={index}
+              podcasts={trendingPodData}
+            />
+          ))
+        )}
       </View>
     </View>
   );
