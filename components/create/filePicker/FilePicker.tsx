@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
@@ -9,11 +9,15 @@ import filePickerStyles from "./filePicker.style";
 interface FilePickerProps {
   onFilePicked: (name: string | null, size: number | null) => void;
   onImagePicked: (image: string | null) => void; // New prop for image picking
+  resetVisuals: () => void;
+  isUploading: boolean;
 }
 
 const FilePicker: React.FC<FilePickerProps> = ({
   onFilePicked,
   onImagePicked,
+  resetVisuals,
+  isUploading,
 }) => {
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
@@ -31,6 +35,7 @@ const FilePicker: React.FC<FilePickerProps> = ({
 
       setSize(result.assets[0].size ?? null); // Update this line
       onFilePicked(result.assets[0].uri, result.assets[0].size ?? null);
+      //  resetFields();
     }
   };
 
@@ -47,9 +52,18 @@ const FilePicker: React.FC<FilePickerProps> = ({
       console.log("From File Picker", result.assets[0].uri);
       setImage(result.assets[0].uri);
       onImagePicked(result.assets[0].uri); // Pass the image URI here
+      //   resetFields();
     }
   };
-
+  useEffect(() => {
+    // Reset visuals if both image and audio are uploaded and isUploading becomes false
+    if (isUploading && (image || name)) {
+      setImage(null);
+      setName(null);
+      setSize(null);
+      resetVisuals();
+    }
+  }, [isUploading, image, name, resetVisuals]);
   return (
     <View style={filePickerStyles.container}>
       <View style={filePickerStyles.imagePickerCont}>

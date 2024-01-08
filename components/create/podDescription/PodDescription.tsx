@@ -52,9 +52,18 @@ const PodDescription: React.FC<PodDescriptionProps> = ({
     setGenreText(tag);
     setSuggestedTags([]);
   };
+  const resetFields = () => {
+    setTitle("");
+    setEpisode("");
+    setGenreText("");
+    setDescription("");
+    setSearchText("");
+    setSuggestedTags([]);
+  };
   const handleUpload = () => {
     if (title && genreText && episode && description) {
       onPodDetailsEntered(title, genreText, episode, description);
+      resetFields();
     } else {
       alert("Please fill all fields");
     }

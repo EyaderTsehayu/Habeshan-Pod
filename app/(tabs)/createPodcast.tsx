@@ -54,6 +54,11 @@ const Page = () => {
     description: "",
   });
 
+  const [resetVisuals, setResetVisuals] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const resetFilePickerVisuals = () => {
+    setResetVisuals(!resetVisuals); // Toggle the state to trigger resetVisuals in FilePicker
+  };
   const handleFilePicked = (name: string | null, size: number | null) => {
     setAudio(name);
   };
@@ -68,15 +73,17 @@ const Page = () => {
     description: string
   ) => {
     setPodcastDetails({ title, genre, episode, description });
-    console.log("Log from the main page");
+    // console.log("Log from the main page");
 
-    console.log("Title:", title);
-    console.log("Genre:", genre);
-    console.log("Episode:", episode);
-    console.log("Image:", image);
-    console.log("File Name:", audio);
+    // console.log("Title:", title);
+    // console.log("Genre:", genre);
+    // console.log("Episode:", episode);
+    // console.log("Image:", image);
+    // console.log("File Name:", audio);
     const storage = getStorage();
     if (image && audio) {
+      setIsUploading(true);
+
       try {
         const storageRef = ref(storage);
 
@@ -92,11 +99,14 @@ const Page = () => {
         const audioBlob = await dataURLToBlob(audio);
 
         // Upload cover image
-        const coverImageRef = ref(storage, `podcasts/${title}/coverImage.jpg`);
+        const coverImageRef = ref(
+          storage,
+          `podcasts/${title}-${episode}/coverImage.jpg`
+        );
         await uploadBytes(coverImageRef, coverImageBlob);
 
         // Upload audio file
-        const audioRef = ref(storage, `podcasts/${title}/audio.mp3`);
+        const audioRef = ref(storage, `podcasts/${title}-${episode}/audio.mp3`);
         await uploadBytes(audioRef, audioBlob);
 
         // Get download URLs for the uploaded files
@@ -116,6 +126,9 @@ const Page = () => {
           audioUrl,
           createdAt: serverTimestamp(),
         });
+        setImage(null);
+        setAudio(null);
+        setIsUploading(false);
       } catch (error) {
         // Handle any errors here
         console.error("Error:", error);
@@ -169,6 +182,9 @@ const Page = () => {
             <FilePicker
               onFilePicked={handleFilePicked}
               onImagePicked={handleImagePicked}
+              resetVisuals={resetFilePickerVisuals}
+              isUploading={isUploading}
+              //    resetFields={resetFilePickerFields}
             />
           </View>
           <PodDescription onPodDetailsEntered={handlePodDetailsEntered} />
