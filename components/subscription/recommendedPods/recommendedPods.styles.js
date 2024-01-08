@@ -12,7 +12,18 @@ const recommendedPodStyles = StyleSheet.create({
 
   cardContainer: {
     paddingTop: 8,
+    paddingBottom: 240,
     rowGap: 18,
+  },
+  noPodsContainer: {
+    paddingTop: 40,
+    paddingBottom: 180,
+  },
+  noPodsTxt: {
+    fontFamily: "dm-b",
+    color: Colors.lightNavy,
+    fontSize: 26,
+    textAlign: "center",
   },
 });
 

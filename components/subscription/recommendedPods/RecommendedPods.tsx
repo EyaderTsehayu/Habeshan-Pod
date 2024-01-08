@@ -55,11 +55,19 @@ const RecommendedPods = () => {
 
   return (
     <View style={recommendedPodStyles.container}>
-      <View style={recommendedPodStyles.cardContainer}>
-        {filtered.map((item) => (
-          <RecommendedPodCard key={item.id} item={item} />
-        ))}
-      </View>
+      {filtered && filtered.length > 0 ? (
+        <View style={recommendedPodStyles.cardContainer}>
+          {filtered.map((item) => (
+            <RecommendedPodCard key={item.id} item={item} />
+          ))}
+        </View>
+      ) : (
+        <View style={recommendedPodStyles.noPodsContainer}>
+          <Text style={recommendedPodStyles.noPodsTxt}>
+            No Recommended pods For You Yet
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
