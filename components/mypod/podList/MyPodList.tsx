@@ -25,7 +25,7 @@ const MyPodList = () => {
     // Simulating data loading delay with setTimeout
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500); // Adjust this delay as needed
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);

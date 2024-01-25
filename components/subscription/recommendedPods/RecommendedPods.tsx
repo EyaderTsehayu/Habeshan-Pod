@@ -4,7 +4,14 @@ import React, { useEffect, useState } from "react";
 import RecommendedPodCard from "@/components/common/cards/recommendedPod/RecommendedPodCard";
 import useFirebaseData from "@/hooks/fetchData";
 import { useUser } from "@clerk/clerk-expo";
-import { collection, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 interface Podcast {
   id: string;
@@ -27,30 +34,31 @@ const RecommendedPods = () => {
   useEffect(() => {
     const fetchFollowedPodcasts = async () => {
       try {
-        const usersCollection = collection(db, "users");
-        const userDoc = doc(usersCollection, userId);
-        const userDocSnapshot = await getDoc(userDoc);
+        const q = query(collection(db, "users"), where("userId", "==", userId));
 
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          const subscribedPodcastCreators: string[] =
-            userData.subscribedPodcastCreators || [];
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            // Access the user data from the document
+            const userData = doc.data();
 
-          // Filter out followed podcasts from recommendations
-          const filteredPods = toFollow.filter(
-            (item) => !subscribedPodcastCreators.includes(item.userId)
-          );
+            // Accessing the array
+            const subscribedPodcastCreators =
+              userData.subscribedPodcastCreators;
+            // Filtering the toFollow array based on the condition
+            const filteredPods = toFollow.filter((item) => {
+              // Checking if item.userId is not equal to any creatorId
+              return !subscribedPodcastCreators.includes(item.userId);
+            });
 
-          setFiltered(filteredPods);
-        }
+            setFiltered(filteredPods);
+          });
+        });
       } catch (error) {
         console.error("Error fetching followed podcasts:", error);
       }
     };
 
-    if (userId) {
-      fetchFollowedPodcasts();
-    }
+    fetchFollowedPodcasts();
   }, [toFollow, userId]);
 
   return (
