@@ -90,7 +90,36 @@ const Page = () => {
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           ></View>
-          <Text style={styles.RecommendedPodsPodTxt}>Recommended pods</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={styles.RecommendedPodsPodTxt}>Recommended pods</Text>
+            <Text
+              style={{
+                backgroundColor: "#DDF2FD",
+                borderRadius: 50,
+                paddingVertical: 4,
+                paddingHorizontal: 8,
+              }}
+            >
+              <TouchableOpacity onPress={() => router.push("/following/page")}>
+                <Text
+                  style={{
+                    fontFamily: "dm-sb",
+                    fontSize: 14,
+                    color: Colors.headerText,
+                  }}
+                >
+                  following
+                </Text>
+              </TouchableOpacity>
+            </Text>
+          </View>
         </View>
         <ScrollView>
           <RecommendedPods />
@@ -145,8 +174,8 @@ const styles = StyleSheet.create({
   },
   RecommendedPodsPodTxt: {
     color: Colors.headerText,
-    padding: 12,
-
+    padding: 6,
+    alignItems: "center",
     fontFamily: "dm-b",
     fontSize: 28,
   },
