@@ -43,7 +43,9 @@
     "react-native-screens": "~3.22.0",
     "react-native-share": "^10.0.2",
     "react-native-track-player": "^3.2.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "expo-device": "~5.4.0",
+    "expo-constants": "~14.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

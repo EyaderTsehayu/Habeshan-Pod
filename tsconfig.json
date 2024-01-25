@@ -14,6 +14,8 @@
     "app/pod-player/player.js",
     "app/pod-player/player.js",
     "app/pod-player/player.js",
-    "app/pod-player/player.js"
+    "app/pod-player/player.js",
+    "app/(tabs)/createPodcast.jsx",
+    "app/(tabs)/createPodcast.jsx"
   ]
 }
