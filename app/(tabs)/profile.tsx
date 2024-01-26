@@ -81,11 +81,11 @@ const Page = () => {
       >
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Profile</Text>
-          <Ionicons
+          {/* <Ionicons
             name="notifications-outline"
             size={26}
             color={Colors.headerText}
-          />
+          /> */}
         </View>
 
         {user && (
@@ -158,7 +158,7 @@ const Page = () => {
             </Text>
           </View>
         )}
-        <View style={styles.detailCont}>
+        {/* <View style={styles.detailCont}>
           <View style={styles.detailTxt}>
             <Text style={styles.detailTxtNo}>556</Text>
             <Text style={styles.detailTxtDesc}>Followers</Text>
@@ -171,7 +171,7 @@ const Page = () => {
             <Text style={styles.detailTxtNo}>1756</Text>
             <Text style={styles.detailTxtDesc}>Likes</Text>
           </View>
-        </View>
+        </View> */}
 
         {isSignedIn && (
           <View style={styles.btnCont}>

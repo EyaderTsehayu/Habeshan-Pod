@@ -38,9 +38,9 @@ const Page = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.ctaContainer}>
-          <View>
+          {/* <View>
             <Popular />
-          </View>
+          </View> */}
           <View>
             <Trending />
           </View>

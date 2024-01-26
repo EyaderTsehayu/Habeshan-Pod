@@ -35,7 +35,7 @@ const Welcome: React.FC<WelcomeProps> = ({
       <View style={welcomeStyles.hero}>
         <View style={welcomeStyles.welcomeMsgContainer}>
           <Text style={welcomeStyles.welcomeMsg}>
-            Discover your favorite
+            Discover your favorite{"\n"}
             <Text style={{ fontFamily: "dm-b", fontSize: 40 }}>podcast</Text>
           </Text>
         </View>
